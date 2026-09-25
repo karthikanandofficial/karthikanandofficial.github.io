@@ -4,10 +4,10 @@ const introWords = [
   'Guten Tag', '안녕하세요', 'Hola', 'こんにちは', 'مرحبا', 'Hallå', 'Bonjour', 'Namaste',
 ];
 
-// Cycles through white + the 4 accent colors used for the glow on the
-// Experience cards (coral/mint/violet/amber), repeating so each of the
-// 5 colors covers exactly 3 of the 15 words.
-const introColors = ['#ffffff', 'var(--coral)', 'var(--mint)', 'var(--accent-purple-bright)', 'var(--amber)'];
+// Cycles through white + the 4 signature-gradient stops used for the
+// Experience timeline dots, repeating so each of the 5 colors covers
+// exactly 3 of the 15 words.
+const introColors = ['#ffffff', 'var(--accent-indigo)', 'var(--accent-violet)', 'var(--accent-magenta)', 'var(--accent-coral)'];
 
 const introLoader = document.getElementById('introLoader');
 const introWord = document.getElementById('introWord');
@@ -63,6 +63,7 @@ if (prefersReducedMotion) {
 introLoader.addEventListener('click', endIntro);
 
 // Mobile nav toggle
+const navEl = document.querySelector('.nav');
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
 
@@ -72,6 +73,40 @@ navToggle.addEventListener('click', () => {
 
 navLinks.querySelectorAll('a').forEach((link) => {
   link.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// Shrinks and blurs the nav once the page has scrolled past the top.
+const updateNavScrolled = () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 24);
+};
+updateNavScrolled();
+window.addEventListener('scroll', updateNavScrolled, { passive: true });
+
+// Highlights the nav link for whichever section is currently in view.
+// rootMargin shrinks the trigger zone to a thin band around mid-viewport,
+// so the active link swaps as a section crosses the middle of the screen
+// rather than the moment it merely enters the viewport edge.
+const navLinkByHref = new Map(
+  Array.from(navLinks.querySelectorAll('a')).map((link) => [link.getAttribute('href'), link])
+);
+
+const sectionObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      const link = navLinkByHref.get(`#${entry.target.id}`);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navLinkByHref.forEach((l) => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  },
+  { rootMargin: '-40% 0px -55% 0px' }
+);
+
+navLinkByHref.forEach((link, href) => {
+  const section = document.querySelector(href);
+  if (section) sectionObserver.observe(section);
 });
 
 // Reveal-on-scroll for elements marked .reveal
@@ -89,7 +124,7 @@ const revealObserver = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-// Shared focus-trap helper for both modals below: keeps Tab/Shift+Tab
+// Focus-trap helper for the contact modal below: keeps Tab/Shift+Tab
 // cycling within the open dialog, and restores focus to whatever
 // triggered it once the dialog closes.
 const FOCUSABLE_SELECTOR =
@@ -112,43 +147,15 @@ function trapFocus(e, panel) {
 
 let lastFocusedEl = null;
 
-// Company tile -> experience detail popup
-const expModal = document.getElementById('expModal');
-const expModalPanel = expModal.querySelector('.exp-modal-panel');
-const expModalBody = expModal.querySelector('.exp-modal-body');
-
-function openExpModal(item) {
-  const template = document.getElementById(item.dataset.target);
-  if (!template) return;
-  lastFocusedEl = document.activeElement;
-  expModalBody.innerHTML = '';
-  expModalBody.appendChild(template.content.cloneNode(true));
-  expModalPanel.dataset.accent = item.dataset.accent;
-  expModal.classList.add('open');
-  expModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  expModal.querySelector('.exp-modal-close').focus();
-}
-
-function closeExpModal() {
-  expModal.classList.remove('open');
-  expModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-  lastFocusedEl?.focus();
-}
-
-document.querySelectorAll('.company-item').forEach((item) => {
-  item.addEventListener('click', () => openExpModal(item));
-});
-
-expModal.querySelectorAll('[data-close]').forEach((el) => {
-  el.addEventListener('click', closeExpModal);
-});
-
-document.addEventListener('keydown', (e) => {
-  if (!expModal.classList.contains('open')) return;
-  if (e.key === 'Escape') closeExpModal();
-  else trapFocus(e, expModalPanel);
+// Experience timeline: each entry expands/collapses independently in place
+// (replaced the old click-to-open-modal pattern so the current role's
+// achievements are visible without any click at all).
+document.querySelectorAll('.timeline-toggle').forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const item = toggle.closest('.timeline-item');
+    const expanded = item.classList.toggle('is-expanded');
+    toggle.setAttribute('aria-expanded', String(expanded));
+  });
 });
 
 // "Submit Query" -> contact form popup

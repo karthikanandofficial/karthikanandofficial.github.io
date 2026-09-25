@@ -8,12 +8,6 @@
   --ink-soft: #565f76;
   --ink-faint: #8b90a3;
 
-  --coral: #e2897e;
-  --coral-deep: #cf6e62;
-
-  --mint: #a3c4b8;
-  --mint-deep: #6f9585;
-
   --border: #e9e2d5;
   --border-soft: #efe9de;
 
@@ -22,17 +16,32 @@
   --dark-text: #f5f5f7;
   --dark-text-dim: #86868f;
   --dark-text-soft: #b8b8c2;
-  --accent-purple: #6d28d9;
-  --accent-purple-bright: #7c3aed;
-  --amber: #d4a24c;
-  --amber-deep: #a97b28;
+
+  /* Signature accent: one continuous indigo -> violet -> magenta -> coral
+     gradient. The four stops give the timeline's four companies distinct
+     but related identities (points on one spectrum, not unrelated hues);
+     --accent/--accent-deep are the flat mid-gradient tones used everywhere
+     else a single color is needed (buttons, hovers, active states). */
+  --accent-indigo: #5b4ff0;
+  --accent-violet: #9a4de0;
+  --accent-magenta: #d1499a;
+  --accent-coral: #f2765c;
+  --accent-coral-deep: #d85f47;
+  --accent: #a34bd6;
+  --accent-deep: #82359f;
+  --accent-gradient: linear-gradient(90deg, var(--accent-indigo), var(--accent-violet), var(--accent-magenta), var(--accent-coral));
+
+  /* Functional feedback colors stay conventional (green/red) regardless of
+     theme, since success/error meaning should read instantly, not match decor. */
+  --success: #4caf7d;
+  --error: #e2897e;
 
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-pill: 999px;
 
   --container: 1080px;
-  --space-section: clamp(56px, 8vw, 104px);
+  --space-section: clamp(44px, 6vw, 80px);
 }
 
 /* ---------- Reset ---------- */
@@ -128,7 +137,7 @@ section { padding: var(--space-section) 0; }
   right: 0;
   height: 4px;
   z-index: 101;
-  background: linear-gradient(90deg, var(--accent-purple), var(--accent-purple-bright), var(--coral));
+  background: var(--accent-gradient);
 }
 
 /* ---------- Nav ---------- */
@@ -140,6 +149,16 @@ section { padding: var(--space-section) 0; }
   z-index: 100;
   background: var(--dark-bg);
   border-bottom: 1px solid #ffffff14;
+  transition: background 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
+}
+
+/* Past the hero, trade the solid bar for a translucent blurred one so the
+   nav stops reading as a hard-edged block once there's page content behind it. */
+.nav.scrolled {
+  background: #000000b3;
+  border-bottom-color: #ffffff22;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .nav .container {
@@ -147,7 +166,10 @@ section { padding: var(--space-section) 0; }
   align-items: center;
   justify-content: space-between;
   height: 72px;
+  transition: height 0.25s ease;
 }
+
+.nav.scrolled .container { height: 60px; }
 
 .nav-logo {
   font-family: 'Caveat Brush', cursive;
@@ -174,13 +196,22 @@ section { padding: var(--space-section) 0; }
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--dark-text-dim);
-  transition: color 0.2s, text-shadow 0.2s;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, text-shadow 0.2s, border-color 0.2s;
   position: relative;
 }
 
 .nav-links a:hover {
   color: var(--dark-text);
   text-shadow: 0 0 10px #ffffffaa;
+}
+
+/* Marks the link for whichever section is currently in view, kept in
+   sync by the IntersectionObserver in main.js. */
+.nav-links a.active {
+  color: var(--dark-text);
+  border-bottom-color: var(--accent);
 }
 
 .nav-toggle {
@@ -203,59 +234,99 @@ section { padding: var(--space-section) 0; }
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  min-height: 100vh;
   padding-top: 76px;
   overflow: hidden;
-  background: #000;
+  background: var(--dark-bg);
 }
 
-/* Left panel reads a shade darker than the right — photo sits inset within
-   it, then bleeds past the 40% split into the right panel; text starts
-   slightly before the photo's trailing edge so the two overlap a little. */
-.hero-bg-left {
+/* Faint glow sampled from the signature gradient (indigo/magenta/coral) so
+   the hero ties into the rest of the site instead of being a flat black
+   rectangle, and reads as one spectrum rather than unrelated colors. */
+.hero-glow {
   position: absolute;
-  top: 76px;
-  left: 0;
-  bottom: 0;
-  width: 40%;
-  background: #000;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(600px circle at 12% 20%, #5b4ff02e, transparent 60%),
+    radial-gradient(520px circle at 90% 8%, #d1499a24, transparent 60%),
+    radial-gradient(700px circle at 75% 95%, #f2765c29, transparent 60%);
+}
+
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #ffffff1c 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(circle at 20% 25%, #000, transparent 65%);
+  mask-image: radial-gradient(circle at 20% 25%, #000, transparent 65%);
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: clamp(32px, 5vw, 72px);
+  padding: 48px 0 88px;
+}
+
+/* Left block: photo centered within its own half, socials centered below it.
+   No offset here — the column's top lines up with hero-content's top edge,
+   i.e. the "AI/ML Engineer" eyebrow label, not the h1 below it. */
+.hero-photo-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
 }
 
 .hero-photo {
-  position: absolute;
-  top: 132px;
-  left: 56px;
-  bottom: 0;
-  width: calc(52% - 56px);
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #000;
-  z-index: 1;
+  background: var(--dark-panel);
+  border: 1px solid #ffffff1a;
 }
 
 .hero-photo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover;
+  display: block;
 }
 
-.hero-photo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 55%, #000 100%);
-  pointer-events: none;
+/* Placeholder quote slot — swap the copy for something real, or drop the
+   block entirely (and its gap gets absorbed by hero-photo-col's flex gap). */
+.hero-quote {
+  max-width: 300px;
+  text-align: center;
+  border-top: 1px solid #ffffff1a;
+  border-bottom: 1px solid #ffffff1a;
+  padding: 20px 4px;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  min-height: calc(100vh - 76px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 47%;
-  padding: 64px clamp(24px, 4vw, 64px) 64px 0;
+.hero-quote p {
+  margin: 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--dark-text-dim);
+}
+
+.hero-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent);
 }
 
 .hero-content h1 {
@@ -264,8 +335,11 @@ section { padding: var(--space-section) 0; }
   color: var(--dark-text);
 }
 
-.hero-content h1 .muted {
-  color: var(--dark-text-dim);
+.hero-accent {
+  background: var(--accent-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .hero-subtext {
@@ -275,11 +349,68 @@ section { padding: var(--space-section) 0; }
   margin-top: 24px;
 }
 
-.hero-actions {
+.hero-social {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 12px;
 }
+
+.hero-social a {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #ffffff22;
+  background: #ffffff0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-text-soft);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.hero-social a:hover {
+  background: #ffffff1a;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.hero-social svg { width: 16px; height: 16px; }
+
+.hero-scroll-cue {
+  position: absolute;
+  z-index: 2;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--dark-text-dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(var(--dark-text-dim), transparent);
+  animation: heroScrollPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes heroScrollPulse {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.5); opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-line { animation: none; }
+}
+
+.hero-grid .reveal:nth-child(1) { transition-delay: 0s; }
+.hero-content .reveal:nth-child(1) { transition-delay: 0.05s; }
+.hero-content .reveal:nth-child(2) { transition-delay: 0.1s; }
+.hero-content .reveal:nth-child(3) { transition-delay: 0.15s; }
 
 .btn {
   display: inline-flex;
@@ -294,160 +425,192 @@ section { padding: var(--space-section) 0; }
 
 .btn-rect { border-radius: var(--radius-md); }
 
-.btn-primary { background: var(--coral); color: #fff; }
-.btn-primary:hover { background: var(--coral-deep); transform: translateY(-2px); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-deep); transform: translateY(-2px); }
 
-.btn-secondary { background: var(--mint); color: #fff; }
-.btn-secondary:hover { background: var(--mint-deep); transform: translateY(-2px); }
+.btn-secondary { background: var(--accent-coral); color: #fff; }
+.btn-secondary:hover { background: var(--accent-coral-deep); transform: translateY(-2px); }
 
 /* ---------- Companies intro ---------- */
 .companies-intro {
   background: #000;
+  border-top: 1px solid #ffffff14;
 }
 
 .companies-heading {
   font-size: clamp(1.9rem, 4vw, 2.8rem);
   line-height: 1.15;
   color: var(--dark-text);
-  margin-bottom: 56px;
+  margin-bottom: 40px;
 }
 
-.companies-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+/* ---------- Experience timeline ---------- */
+.timeline {
+  position: relative;
+  margin-top: 8px;
 }
 
-/* Per-tile accent used by both the hover glow here and the matching
-   detail card's highlight below, so clicking a tile visibly connects
-   the two. */
-.company-item[data-accent="coral"] { --accent: var(--coral); }
-.company-item[data-accent="mint"] { --accent: var(--mint); }
-.company-item[data-accent="violet"] { --accent: var(--accent-purple-bright); }
-.company-item[data-accent="amber"] { --accent: var(--amber); }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: #ffffff1a;
+}
 
-.company-item {
-  /* Chromium wraps <button> content in an internal anonymous flexbox that
-     vertically centers/distributes children regardless of `display: block`,
-     which pushed the number down further on shorter cards. Declaring our
-     own column flex here takes that box back over so all 4 numbers align. */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
+/* Per-item accent used by the rail dot, company name, chevron, and bullet
+   markers, so expanding an entry visibly ties back to its dot on the rail.
+   The 4 companies sample 4 points along the signature gradient (most
+   recent = cool indigo, oldest = warm coral) instead of unrelated hues. */
+.timeline-item[data-accent="indigo"] { --accent: var(--accent-indigo); }
+.timeline-item[data-accent="violet"] { --accent: var(--accent-violet); }
+.timeline-item[data-accent="magenta"] { --accent: var(--accent-magenta); }
+.timeline-item[data-accent="coral"] { --accent: var(--accent-coral); }
+
+.timeline-item {
+  position: relative;
+  padding-left: 32px;
+  border-bottom: 1px solid #ffffff1a;
+}
+
+.timeline-item:last-child { border-bottom: none; }
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 34px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--dark-bg), 0 0 14px -2px var(--accent);
+}
+
+.timeline-toggle {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 0;
   background: none;
-  border: 1px solid #ffffff2e;
-  border-radius: var(--radius-md);
-  padding: 20px;
+  border: none;
   font-family: inherit;
   text-align: left;
   color: inherit;
   cursor: pointer;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
 }
 
-.company-item:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 28px -6px var(--accent);
-  background: #ffffff08;
+.timeline-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  row-gap: 6px;
+  flex: 1;
+  min-width: 0;
 }
 
-.company-num {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: clamp(2.2rem, 4vw, 3rem);
+.timeline-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.timeline-company {
   color: var(--accent);
-  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-.company-name {
-  color: var(--dark-text);
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin-bottom: 4px;
+.timeline-role {
+  color: var(--dark-text-dim);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
-.company-name .accent { font-weight: 700; }
-.company-name .accent.coral { color: var(--coral); }
-.company-name .accent.mint { color: var(--mint); }
-.company-name .accent.violet { color: var(--accent-purple-bright); }
-.company-name .accent.amber { color: var(--amber); }
-
-.company-dates {
-  color: var(--dark-text);
+.timeline-dates {
+  color: var(--dark-text-dim);
   font-size: 0.82rem;
   font-weight: 500;
-  margin-bottom: 12px;
+  white-space: nowrap;
+  padding-top: 2px;
 }
 
-.company-desc {
+.timeline-chevron {
+  width: 18px;
+  height: 18px;
   color: var(--dark-text-dim);
-  font-size: 0.9rem;
-  font-style: italic;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.timeline-item.is-expanded .timeline-chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.timeline-toggle:hover .timeline-chevron { color: var(--accent); }
+
+/* grid-rows 0fr -> 1fr animates to full content height without JS
+   measuring it; the inner wrapper's overflow:hidden clips it mid-transition. */
+.timeline-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.timeline-item.is-expanded .timeline-content {
+  grid-template-rows: 1fr;
+}
+
+.timeline-content-inner { overflow: hidden; }
+
+.timeline-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 28px;
+}
+
+.timeline-bullets li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--dark-text-dim);
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 
-/* ---------- Experience detail (rendered inside the modal) ---------- */
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 18px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.exp-company {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-text, var(--coral-deep));
-  margin-bottom: 6px;
-}
-
-.exp-role {
-  font-size: 1.25rem;
-  font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif;
-}
-
-.exp-meta {
-  color: var(--accent-text, var(--ink-faint));
-  font-size: 0.85rem;
-  font-weight: 500;
-  white-space: nowrap;
-  text-align: right;
-}
-
-.exp-bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.exp-bullets li {
-  color: var(--ink-soft);
-  font-size: 0.94rem;
-  padding-left: 20px;
-  position: relative;
-}
-
-.exp-bullets li::before {
+.timeline-bullets li::before {
   content: '';
   position: absolute;
   left: 0;
   top: 9px;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--mint-deep);
+  background: var(--accent);
 }
 
 /* ---------- Skills ---------- */
+.skills-group { margin-bottom: 40px; }
+.skills-group:last-child { margin-bottom: 0; }
+
+.skills-group-title {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dark-text-dim);
+  margin-bottom: 16px;
+}
+
 .skills-logo-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -467,8 +630,8 @@ section { padding: var(--space-section) 0; }
 }
 
 .skill-logo-card:hover {
-  border-color: var(--coral);
-  box-shadow: 0 12px 32px -10px var(--coral);
+  border-color: var(--accent);
+  box-shadow: 0 12px 32px -10px var(--accent);
   transform: translateY(-3px);
 }
 
@@ -476,6 +639,18 @@ section { padding: var(--space-section) 0; }
   width: 48px;
   height: 48px;
   object-fit: contain;
+}
+
+/* Core stack (languages/ML) leads visually: bigger icons, a resting
+   accent border instead of only-on-hover, so it doesn't read as equal
+   weight to the peripheral tooling further down. */
+.skills-group-core .skill-logo-card {
+  border-color: #a34bd63d;
+}
+
+.skills-group-core .skill-logo-card img {
+  width: 56px;
+  height: 56px;
 }
 
 /* A few brand marks (e.g. Flask) are near-black and vanish on a dark
@@ -497,6 +672,7 @@ section { padding: var(--space-section) 0; }
 /* ---------- Featured projects (dark) ---------- */
 .projects-dark {
   background: #000;
+  border-top: 1px solid #ffffff14;
 }
 
 .projects-grid {
@@ -516,9 +692,9 @@ section { padding: var(--space-section) 0; }
 }
 
 .project-feature-card:hover {
-  border-color: var(--coral);
+  border-color: var(--accent);
   transform: translateY(-4px);
-  box-shadow: 0 20px 48px -16px var(--coral);
+  box-shadow: 0 20px 48px -16px var(--accent);
 }
 
 .project-feature-image {
@@ -538,6 +714,31 @@ section { padding: var(--space-section) 0; }
   display: block;
 }
 
+/* Certificates come from two different issuers at two different aspect
+   ratios; a fixed-height frame on a neutral paper mat keeps both the same
+   visual size instead of one getting much wider letterbox bars than the
+   other the way the generic black photo box did. */
+.hackathon-cert-frame {
+  height: 260px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hackathon-cert-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+}
+
 .project-feature-caption {
   padding: 28px 28px 32px;
 }
@@ -547,7 +748,7 @@ section { padding: var(--space-section) 0; }
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--coral);
+  color: var(--accent);
   margin-bottom: 10px;
 }
 
@@ -561,6 +762,122 @@ section { padding: var(--space-section) 0; }
   color: var(--dark-text-dim);
   font-size: 0.94rem;
   line-height: 1.6;
+}
+
+/* ---------- Project cards (text-led — these were generic stock/mockup
+   images with no real signal, unlike the certificate scans in Hackathons) ---------- */
+.project-card {
+  display: block;
+  background: var(--dark-panel);
+  border: 1px solid #ffffff2e;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px -16px var(--accent);
+}
+
+.project-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.project-card-header h3 {
+  color: var(--dark-text);
+  font-size: 1.3rem;
+}
+
+.project-card-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dark-text-dim);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.project-card:hover .project-card-link {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.project-card-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.project-card > p {
+  color: var(--dark-text-dim);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.project-card-stack {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stack-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: #ffffff0a;
+  border: 1px solid #ffffff14;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark-text-soft);
+}
+
+.stack-chip img { width: 14px; height: 14px; object-fit: contain; }
+
+/* ---------- Education (compact, text-led — a campus photo carries no
+   signal here, unlike the certificate scans in Hackathons) ---------- */
+.education-list {
+  margin-top: 8px;
+  border-top: 1px solid #ffffff1a;
+}
+
+.education-item {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 24px;
+  padding: 28px 16px;
+  margin: 0 -16px;
+  border-bottom: 1px solid #ffffff1a;
+  border-radius: var(--radius-md);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.education-item:hover {
+  background: #ffffff08;
+  transform: translateX(6px);
+}
+
+.education-dates {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 3px;
+}
+
+.education-main h3 {
+  color: var(--dark-text);
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.education-main p {
+  color: var(--dark-text-dim);
+  font-size: 0.92rem;
 }
 
 /* ---------- Experience modal ---------- */
@@ -588,11 +905,6 @@ section { padding: var(--space-section) 0; }
   background: #05050ae0;
   backdrop-filter: blur(4px);
 }
-
-.exp-modal-panel[data-accent="coral"] { --accent: var(--coral); --accent-text: var(--coral-deep); }
-.exp-modal-panel[data-accent="mint"] { --accent: var(--mint); --accent-text: var(--mint-deep); }
-.exp-modal-panel[data-accent="violet"] { --accent: var(--accent-purple-bright); --accent-text: var(--accent-purple); }
-.exp-modal-panel[data-accent="amber"] { --accent: var(--amber); --accent-text: var(--amber-deep); }
 
 .exp-modal-panel {
   position: relative;
@@ -648,7 +960,7 @@ section { padding: var(--space-section) 0; }
   margin-bottom: 0;
 }
 
-.accent-hello { color: var(--coral); }
+.accent-hello { color: var(--accent-deep); }
 
 .contact-form { display: flex; flex-direction: column; }
 
@@ -679,7 +991,7 @@ section { padding: var(--space-section) 0; }
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  border-bottom-color: var(--coral);
+  border-bottom-color: var(--accent-deep);
 }
 
 .contact-form button[type="submit"] {
@@ -697,8 +1009,8 @@ section { padding: var(--space-section) 0; }
   font-size: 0.88rem;
 }
 
-.form-status.success { color: var(--mint-deep); }
-.form-status.error { color: var(--coral-deep); }
+.form-status.success { color: var(--success); }
+.form-status.error { color: var(--error); }
 
 /* ---------- CTA band / Footer (merged, dark) ---------- */
 .cta-band {
@@ -710,6 +1022,7 @@ section { padding: var(--space-section) 0; }
   background: #000;
   background-image: radial-gradient(circle, #ffffff14 1px, transparent 1px);
   background-size: 18px 18px;
+  border-top: 1px solid #ffffff14;
 }
 
 .cta-actions {
@@ -718,16 +1031,6 @@ section { padding: var(--space-section) 0; }
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 48px;
-}
-
-.thanks-line {
-  grid-column: 2;
-  justify-self: center;
-  text-align: center;
-  font-family: 'Caveat Brush', cursive;
-  font-size: 1.5rem;
-  color: var(--dark-text);
-  white-space: nowrap;
 }
 
 .footer-bottom .contact-icons { justify-self: end; }
@@ -752,7 +1055,7 @@ section { padding: var(--space-section) 0; }
 
 .contact-icons a:hover {
   background: #ffffff1a;
-  border-color: var(--coral);
+  border-color: var(--accent);
   transform: translateY(-2px);
 }
 
@@ -760,7 +1063,7 @@ section { padding: var(--space-section) 0; }
 
 .footer-bottom {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 16px;
   text-align: left;
@@ -784,7 +1087,6 @@ section { padding: var(--space-section) 0; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
-  .companies-grid { grid-template-columns: repeat(2, 1fr); }
   .skills-logo-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
@@ -808,33 +1110,32 @@ section { padding: var(--space-section) 0; }
   .nav-links.open { transform: translateY(0); }
   .nav-toggle { display: flex; }
 
-  .hero { min-height: auto; }
-  .hero-bg-left { display: none; }
+  .hero-grid {
+    grid-template-columns: 1fr;
+    padding: 64px 0 88px;
+    text-align: center;
+  }
   .hero-photo {
-    position: static;
-    width: 100%;
-    height: 320px;
+    aspect-ratio: 1 / 1;
+    max-width: 240px;
   }
-  .hero-photo::after { display: none; }
-  .hero-content {
-    margin-left: 0;
-    min-height: auto;
-    padding: 40px 24px;
-  }
-  .hero-actions { justify-content: center; }
-  .exp-header { flex-direction: column; }
-  .exp-meta { text-align: left; }
+  .hero-subtext { margin-left: auto; margin-right: auto; }
+  .timeline-heading { flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+  .timeline-dates { padding-top: 0; }
   .projects-grid { grid-template-columns: 1fr; }
+  .education-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 22px 0;
+  }
 }
 
 @media (max-width: 520px) {
-  .companies-grid { grid-template-columns: 1fr; }
   .skills-logo-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-bottom {
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
   }
-  .thanks-line { grid-column: 1; white-space: normal; }
   .footer-bottom .contact-icons { justify-self: center; }
 }
