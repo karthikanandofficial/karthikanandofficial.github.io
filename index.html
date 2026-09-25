@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karthik A — AI/ML Engineer</title>
+<meta name="description" content="AI/ML Engineer with 6+ years building production RAG, Agentic AI, and LLM systems. Portfolio of work, projects, and experience.">
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Caveat+Brush&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="introLoader" class="intro-loader">
+  <div class="intro-word-wrap">
+    <span class="intro-dot" id="introDot"></span>
+    <h2 class="intro-word" id="introWord">Hello</h2>
+  </div>
+</div>
+
+<div class="top-bar"></div>
+
+<nav class="nav">
+  <div class="container">
+    <a href="#home" class="nav-logo">karthik.</a>
+    <ul class="nav-links">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#hackathons">Hackathons</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<header id="home" class="hero">
+  <div class="hero-bg-left"></div>
+  <div class="hero-photo">
+    <img src="assets/profile.jpg" alt="Karthik A">
+  </div>
+  <div class="hero-content">
+    <h1>I'm Karthik.<br>An AI/ML Engineer<br><span class="muted">based in Bengaluru.</span></h1>
+    <p class="hero-subtext">I'm probably the most passionate developer you will ever get to work with. If you have a great project that needs some amazing skills, I'm your guy.</p>
+  </div>
+</header>
+
+<section id="experience" class="companies-intro">
+  <div class="container">
+    <span class="section-label">Work Experience</span>
+    <h2 class="companies-heading">Companies I have worked<br>for in the past.</h2>
+    <div class="companies-grid">
+      <button type="button" class="company-item reveal" data-accent="coral" data-target="tpl-exp-statusneo">
+        <div class="company-num" aria-hidden="true">01</div>
+        <div class="company-name"><span class="accent coral">StatusNeo</span></div>
+        <div class="company-dates">Jun 2025 – Present</div>
+        <p class="company-desc" aria-hidden="true">I lead the bank's first production AI platform here, building agentic RAG systems, KYC document pipelines, and voice/face biometrics.</p>
+      </button>
+      <button type="button" class="company-item reveal" data-accent="mint" data-target="tpl-exp-tcs">
+        <div class="company-num" aria-hidden="true">02</div>
+        <div class="company-name"><span class="accent mint">Tata Consultancy Services</span></div>
+        <div class="company-dates">Mar 2022 – Aug 2023</div>
+        <p class="company-desc" aria-hidden="true">I built a GPT-3 powered helpdesk assistant handling 5K+ daily employee queries, plus LLM safety and observability tooling.</p>
+      </button>
+      <button type="button" class="company-item reveal" data-accent="violet" data-target="tpl-exp-ericsson">
+        <div class="company-num" aria-hidden="true">03</div>
+        <div class="company-name"><span class="accent violet">Ericsson</span></div>
+        <div class="company-dates">Aug 2019 – Feb 2022</div>
+        <p class="company-desc" aria-hidden="true">I built recommendation systems and CV/NLP models here, driving a 23% CTR uplift across 5M+ users.</p>
+      </button>
+      <button type="button" class="company-item reveal" data-accent="amber" data-target="tpl-exp-dxc">
+        <div class="company-num" aria-hidden="true">04</div>
+        <div class="company-name"><span class="accent amber">DXC Technology</span></div>
+        <div class="company-dates">Mar 2018 – Jun 2019</div>
+        <p class="company-desc" aria-hidden="true">I built predictive models and engineered features here, cutting ticket resolution time ~40% for a 40-person support team.</p>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="exp-modal" id="expModal" aria-hidden="true">
+  <div class="exp-modal-backdrop" data-close></div>
+  <div class="exp-modal-panel" role="dialog" aria-modal="true">
+    <button type="button" class="exp-modal-close" aria-label="Close" data-close>&times;</button>
+    <div class="exp-modal-body"></div>
+  </div>
+</div>
+
+<template id="tpl-exp-statusneo">
+  <div class="exp-header">
+    <div>
+      <div class="exp-company">StatusNeo</div>
+      <div class="exp-role">Senior Consultant</div>
+    </div>
+    <div class="exp-meta">Jun 2025 – Present<br>Bengaluru, India</div>
+  </div>
+  <ul class="exp-bullets">
+    <li>Architected and led the bank's first production Python AI platform: document classification/extraction microservices for 800+ users pan-India at 97% accuracy.</li>
+    <li>Co-designed an agentic banking platform orchestrating workflows through an MCP-compatible tool layer with persistent memory, session management, and MFA authentication.</li>
+    <li>Pioneered a hybrid FAISS + BM25 retrieval service with sentence-transformer embeddings and a Cohere/BGE reranker, reducing LLM hallucinations by 40–60% across 5 projects.</li>
+    <li>Built an LLM-powered Credit Card KYC Document Processing Pipeline for 12 distinct document types (Aadhaar, PAN, ReKYC forms, consent letters) using Gemini 2.5 Flash.</li>
+    <li>Benchmarked 7 face-embedding models (ArcFace, FaceNet variants on InsightFace) and shipped sub-100ms recognition at 99.2% accuracy under production load.</li>
+    <li>Fine-tuned Indic Parler-TTS and Wav2Vec2/Whisper STT and built ECAPA-TDNN speaker verification reaching 97% accuracy, plus anti-spoofing voice forensics.</li>
+  </ul>
+</template>
+
+<template id="tpl-exp-tcs">
+  <div class="exp-header">
+    <div>
+      <div class="exp-company">Tata Consultancy Services</div>
+      <div class="exp-role">System Engineer</div>
+    </div>
+    <div class="exp-meta">Mar 2022 – Aug 2023<br>Bengaluru, India</div>
+  </div>
+  <ul class="exp-bullets">
+    <li>Developed a GPT-3-powered internal IT/HR helpdesk assistant, handling 5K+ daily employee queries (VPN, access requests, leave/payroll) with 4.3/5 user satisfaction.</li>
+    <li>Contributed to team-wide LLM safety checks — prompt- and regex-based input/output validation, PII redaction, and jailbreak detection for sensitive-data apps.</li>
+    <li>Engineered LLM observability dashboards tracking token usage, latency, cost, and error rates, enabling data-driven model selection and cutting costs via open-source models for simple tasks.</li>
+  </ul>
+</template>
+
+<template id="tpl-exp-ericsson">
+  <div class="exp-header">
+    <div>
+      <div class="exp-company">Ericsson</div>
+      <div class="exp-role">Associate Engineer</div>
+    </div>
+    <div class="exp-meta">Aug 2019 – Feb 2022<br>Bengaluru, India</div>
+  </div>
+  <ul class="exp-bullets">
+    <li>Designed a hybrid recommendation system (collaborative filtering + DNN re-ranking) for device and accessory bundling on product pages, driving 23% CTR uplift across 5M users.</li>
+    <li>Adapted ResNet50/Inception via transfer learning to auto-categorize device catalog images across 10 categories, achieving high-90s% accuracy on frequent classes.</li>
+    <li>Fine-tuned BERT for ticket classification across 20 categories, auto-routing of high-frequency tickets with confidence-based fallback to manual queue, reducing SLA-impacting delays.</li>
+  </ul>
+</template>
+
+<template id="tpl-exp-dxc">
+  <div class="exp-header">
+    <div>
+      <div class="exp-company">DXC Technology</div>
+      <div class="exp-role">Technical Solutions Rep</div>
+    </div>
+    <div class="exp-meta">Mar 2018 – Jun 2019<br>Bengaluru, India</div>
+  </div>
+  <ul class="exp-bullets">
+    <li>Trained and tuned Random Forest/XGBoost on ticket and shift-level features to predict escalation risk at intake, improving F1-score 12% over logistic regression baseline.</li>
+    <li>Engineered 40+ reusable features (staffing, ticket volume, resolution time, escalations) from raw SQL via Pandas/NumPy aggregations, cutting reporting/model prep time by 30%.</li>
+    <li>Rebuilt internal knowledge base into an SEO-indexed portal for a 40-person support team; improved search accuracy 20% and cut resolution time ~40% across 500+ monthly tickets.</li>
+  </ul>
+</template>
+
+<section id="skills" class="projects-dark">
+  <div class="container">
+    <span class="section-label">Toolbox</span>
+    <h2 class="companies-heading">Skills I've learned<br>and shipped with.</h2>
+    <div class="skills-logo-grid">
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/cplusplus/cplusplus-original.svg" alt="C++" loading="lazy">
+        <span>C++</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/python/python-original.svg" alt="Python" loading="lazy">
+        <span>Python</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/pytorch/pytorch-original.svg" alt="PyTorch" loading="lazy">
+        <span>PyTorch</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/tensorflow/tensorflow-original.svg" alt="TensorFlow" loading="lazy">
+        <span>TensorFlow</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" loading="lazy">
+        <span>PostgreSQL</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/fastapi/fastapi-original.svg" alt="FastAPI" loading="lazy">
+        <span>FastAPI</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/flask/flask-original.svg" alt="Flask" loading="lazy" class="icon-light-chip">
+        <span>Flask</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/nodejs/nodejs-original.svg" alt="Node.js" loading="lazy">
+        <span>Node.js</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/yugabytedb/yugabytedb-original.svg" alt="YugabyteDB" loading="lazy">
+        <span>YugabyteDB</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/redis/redis-original.svg" alt="Redis" loading="lazy">
+        <span>Redis</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/docker/docker-original.svg" alt="Docker" loading="lazy">
+        <span>Docker</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/aerospike/aerospike-original.svg" alt="Aerospike" loading="lazy">
+        <span>Aerospike</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/kubernetes/kubernetes-original.svg" alt="Kubernetes" loading="lazy">
+        <span>Kubernetes</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/googlecloud/googlecloud-original.svg" alt="GCP" loading="lazy">
+        <span>GCP</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/jenkins/jenkins-original.svg" alt="Jenkins" loading="lazy">
+        <span>Jenkins</span>
+      </div>
+      <div class="skill-logo-card reveal">
+        <img src="https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons/opentelemetry/opentelemetry-original.svg" alt="OpenTelemetry" loading="lazy">
+        <span>OpenTelemetry</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education" class="projects-dark">
+  <div class="container">
+    <span class="section-label">Foundation</span>
+    <h2 class="companies-heading">Where I built my<br>foundation.</h2>
+    <div class="projects-grid">
+      <div class="project-feature-card reveal">
+        <div class="project-feature-image">
+          <img src="assets/education-georgian.jpg" alt="Georgian College, Barrie">
+        </div>
+        <div class="project-feature-caption">
+          <div class="project-feature-eyebrow">Sept 2023 – Apr 2024</div>
+          <h3>Post Graduation, Artificial Intelligence</h3>
+          <p>Georgian College, Barrie, Canada</p>
+        </div>
+      </div>
+      <div class="project-feature-card reveal">
+        <div class="project-feature-image">
+          <img src="assets/education-oxford.jpg" alt="The Oxford College of Engineering, Bengaluru">
+        </div>
+        <div class="project-feature-caption">
+          <div class="project-feature-eyebrow">Aug 2013 – Jun 2017</div>
+          <h3>Bachelor of Engineering, Information Science</h3>
+          <p>The Oxford College of Engineering, Bengaluru, India</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="hackathons" class="projects-dark">
+  <div class="container">
+    <span class="section-label">Compete</span>
+    <h2 class="companies-heading">Hackathons I've<br>shown up for.</h2>
+    <div class="projects-grid">
+      <div class="project-feature-card reveal">
+        <div class="project-feature-image">
+          <img src="assets/hackathon-monsoonsaathi.jpg" alt="MonsoonSaathi at Google PromptWars">
+        </div>
+        <div class="project-feature-caption">
+          <div class="project-feature-eyebrow">July 2026</div>
+          <h3>MonsoonSaathi</h3>
+          <p>Ranked 16th out of 128 teams, organized by Google PromptWars Bengaluru.</p>
+        </div>
+      </div>
+      <div class="project-feature-card reveal">
+        <div class="project-feature-image">
+          <img src="assets/hackathon-medivision.jpg" alt="MediVision at Georgian College AI Hackathon">
+        </div>
+        <div class="project-feature-caption">
+          <div class="project-feature-eyebrow">Feb 2024</div>
+          <h3>MediVision</h3>
+          <p>Ranked 4th out of 25 teams, organized by Georgian College AI Hackathon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="projects-dark">
+  <div class="container">
+    <span class="section-label">My Projects</span>
+    <h2 class="companies-heading">Projects I've built<br>outside of work.</h2>
+    <div class="projects-grid">
+      <a class="project-feature-card reveal" href="https://github.com/karthikanandofficial/agentcli" target="_blank" rel="noopener">
+        <div class="project-feature-image">
+          <img src="assets/project-agentcli.jpg" alt="AgentCLI">
+        </div>
+        <div class="project-feature-caption">
+          <h3>AgentCLI</h3>
+          <p>A command-line AI assistant that writes and edits code for you, right in your terminal.</p>
+        </div>
+      </a>
+      <a class="project-feature-card reveal" href="https://github.com/karthikanandofficial/labelmint" target="_blank" rel="noopener">
+        <div class="project-feature-image">
+          <img src="assets/project-labelmint.jpg" alt="LabelMint">
+        </div>
+        <div class="project-feature-caption">
+          <h3>LabelMint</h3>
+          <p>A free tool for tagging and labeling images to train machine learning models.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer id="contact" class="cta-band cta-dark">
+  <div class="container">
+    <span class="section-label">Get in touch</span>
+    <h2 class="companies-heading">Have an opening or a project in mind?<br>I'd love to hear about it.</h2>
+    <div class="cta-actions">
+      <button type="button" class="btn btn-rect btn-secondary" id="submitQueryBtn">Submit Query</button>
+      <a href="assets/Karthik_Anand_Resume.pdf" download class="btn btn-rect btn-primary">Download Resume</a>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Karthik A · Bengaluru, India</span>
+      <p class="thanks-line">thanks for visiting.</p>
+      <div class="contact-icons">
+        <a href="https://www.linkedin.com/in/akarthik07/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0Z"/></svg>
+        </a>
+        <a href="https://github.com/karthikanandofficial" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1-.02-1.96-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.7-1.28-1.7-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12c0-6.35-5.15-11.5-11.5-11.5Z"/></svg>
+        </a>
+        <a href="mailto:karthikanandofficial@gmail.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="exp-modal" id="contactModal" aria-hidden="true">
+  <div class="exp-modal-backdrop" data-close-contact></div>
+  <div class="exp-modal-panel" role="dialog" aria-modal="true">
+    <button type="button" class="exp-modal-close" aria-label="Close" data-close-contact>&times;</button>
+    <div class="contact-form-intro">
+      <h3 class="contact-form-heading">Let's talk about<br>your <span class="accent-hello">project/opening</span>.</h3>
+    </div>
+    <form class="contact-form" id="queryForm">
+      <label for="queryName">Name</label>
+      <input type="text" id="queryName" name="name" required>
+      <label for="queryEmail">Email</label>
+      <input type="email" id="queryEmail" name="email" required>
+      <label for="queryProject">Message</label>
+      <textarea id="queryProject" name="message" rows="4"></textarea>
+      <button type="submit" class="btn btn-rect btn-primary" id="sendMessageBtn">Let's get started</button>
+      <p class="form-status" id="formStatus" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
